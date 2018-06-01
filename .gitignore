@@ -3,4 +3,5 @@
 /bin/
 /.shards/
 sentry_cli
+datadog_raygun
 .env
