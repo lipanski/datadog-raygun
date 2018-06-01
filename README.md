@@ -9,7 +9,7 @@ WEBHOOK_SECRET=secret \
   QUEUE_DEADLINE=60 \
   QUEUE_SIZE=50 \
   LOG_LEVEL=DEBUG \
-  datadog_raygun --port 8080
+  datadog_raygun --port 3000
 ```
 
 ## Docker
@@ -30,9 +30,11 @@ docker run -it \
   -e QUEUE_DEADLINE=60 \
   -e QUEUE_SIZE=50 \
   -e LOG_LEVEL=DEBUG \
-  -p 3000:3000 \
-  datadog-raygun
+  -p 3000:80 \
+  datadog-raygun --port 80
 ```
+
+Your container will be reachable over port 3000.
 
 ## Development
 

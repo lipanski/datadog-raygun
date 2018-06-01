@@ -9,4 +9,5 @@ RUN crystal deps
 ADD src /src
 RUN crystal build --release datadog_raygun.cr
 
-CMD ./datadog_raygun
+EXPOSE 80
+CMD ./datadog_raygun --port 80
