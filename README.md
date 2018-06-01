@@ -5,11 +5,25 @@
 ```
 WEBHOOK_SECRET=secret \
   DATADOG_API_KEY=your-datadog-api-key \
-  TAGS='{"Florin": ["stack:production", "application:florin"]}' \
+  TAGS='{"Some Raygun Project": ["some-datadog-label", "some-other-datadog-label"]}' \
   QUEUE_DEADLINE=60 \
   QUEUE_SIZE=50 \
   LOG_LEVEL=DEBUG \
   datadog_raygun --port 8080
+```
+
+## Docker
+
+Build the image:
+
+```sh
+docker build -t datadog-raygun .
+```
+
+Run a container:
+
+```sh
+docker run -it -e WEBHOOK_SECRET=secret -e DATADOG_API_KEY=your-datadog-api-key -e TAGS='{"Some Raygun Project": ["some-datadog-label", "some-other-datadog-label"]}' -e QUEUE_DEADLINE=60 -e QUEUE_SIZE=50 -e LOG_LEVEL=DEBUG -p 3000:3000 datadog-raygun
 ```
 
 ## Development
