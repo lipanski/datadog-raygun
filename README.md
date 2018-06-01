@@ -23,7 +23,15 @@ docker build -t datadog-raygun .
 Run a container:
 
 ```sh
-docker run -it -e WEBHOOK_SECRET=secret -e DATADOG_API_KEY=your-datadog-api-key -e TAGS='{"Some Raygun Project": ["some-datadog-label", "some-other-datadog-label"]}' -e QUEUE_DEADLINE=60 -e QUEUE_SIZE=50 -e LOG_LEVEL=DEBUG -p 3000:3000 datadog-raygun
+docker run -it \
+  -e WEBHOOK_SECRET=secret \
+  -e DATADOG_API_KEY=your-datadog-api-key \
+  -e TAGS='{"Some Raygun Project": ["some-datadog-label", "some-other-datadog-label"]}' \
+  -e QUEUE_DEADLINE=60 \
+  -e QUEUE_SIZE=50 \
+  -e LOG_LEVEL=DEBUG \
+  -p 3000:3000 \
+  datadog-raygun
 ```
 
 ## Development
