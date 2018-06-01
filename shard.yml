@@ -1,0 +1,23 @@
+name: datadog_raygun
+version: 0.1.0
+
+authors:
+  - Florin Lipan <florinlipan@gmail.com>
+
+targets:
+  datadog_raygun:
+    main: src/datadog_raygun.cr
+
+crystal: 0.24.2
+
+license: MIT
+
+dependencies:
+  kemal:
+    github: kemalcr/kemal
+  dotenv:
+    github: gdotdesign/cr-dotenv
+
+development_dependencies:
+  sentry:
+    github: samueleaton/sentry
