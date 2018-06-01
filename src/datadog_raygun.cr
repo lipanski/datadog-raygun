@@ -20,7 +20,7 @@ post "/webhook" do |env|
   if event.error? && TAGS.has_key?(event.application_name)
     metric_name = event.new? ? "raygun.new_error_occurred" : "raygun.error_reoccurred"
     tags = TAGS[event.application_name] + event.prefixed_tags("raygun")
-    Collector.enqueue(Datadog::Metric.gauge(metric_name, 1, tags))
+    Collector.enqueue(Datadog::Metric.count(metric_name, 1, tags))
   end
 
   "ok"

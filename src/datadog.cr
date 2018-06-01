@@ -41,8 +41,8 @@ module Datadog
       tags: Array(String),
     )
 
-    def self.gauge(metric : String, value : Int32, tags : Array(String))
-      new(metric, "gauge", [[Time.now.to_s("%s").to_i, value]], tags)
+    def self.count(metric : String, value : Int32, tags : Array(String))
+      new(metric, "count", [[Time.now.to_s("%s").to_i, value]], tags)
     end
 
     def initialize(@metric : String, @type : String, @points : Array(Array(Int32)), @tags : Array(String))
