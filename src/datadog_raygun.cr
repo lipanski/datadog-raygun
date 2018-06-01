@@ -1,4 +1,6 @@
+{% unless flag?(:release) %}
 require "dotenv"; Dotenv.load(".env")
+{% end %}
 require "kemal"
 require "logger"
 require "./raygun"

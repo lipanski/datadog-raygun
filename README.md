@@ -9,7 +9,7 @@ WEBHOOK_SECRET=secret \
   QUEUE_DEADLINE=60 \
   QUEUE_SIZE=50 \
   LOG_LEVEL=DEBUG \
-  datadog_raygun
+  datadog_raygun --port 8080
 ```
 
 ## Development
@@ -43,6 +43,8 @@ Then you can configure your Raygun project to point to the ngrok host and trigge
 ```sh
 curl -XPOST https://api.raygun.com/entries -H "X-ApiKey: <RAYGUN API KEY>" -H "Content-Type: application/json" -d @examples/full.json -i
 ```
+
+If you want to trigger a *new* error, change the `groupingKey` in `examples/full.json`.
 
 If you don't want to expose your local server, you can simulate the Raygun callback to localhost:
 
