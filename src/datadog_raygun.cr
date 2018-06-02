@@ -8,9 +8,9 @@ require "./collector"
 
 TAGS = Hash(String, Array(String)).from_json(ENV.fetch("TAGS"))
 
-post "/webhook" do |env|
-  unless env.params.query["secret"]? == ENV.fetch("WEBHOOK_SECRET")
-    halt env, status_code: 403, response: "forbidden"
+post "/webhook/:secret" do |env|
+  unless env.params.url["secret"] == ENV.fetch("WEBHOOK_SECRET")
+    halt env, status_code: 401, response: "unauthorized"
   end
 
   body = env.request.body.not_nil!.gets_to_end
@@ -23,6 +23,10 @@ post "/webhook" do |env|
   end
 
   "ok"
+end
+
+error 404 do
+  "not found"
 end
 
 error 500 do

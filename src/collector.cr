@@ -46,7 +46,6 @@ module Collector
     series.create!
   rescue exception : Datadog::Error
     logger.error("A Datadog error occured: #{exception.message}", "COLLECTOR")
-    @@queue += metrics if metrics
   rescue exception : Exception
     logger.error("An error occured: #{exception.inspect_with_backtrace}", "COLLECTOR")
   else

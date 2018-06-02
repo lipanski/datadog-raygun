@@ -1,13 +1,13 @@
 {
     "event": "error_notification",
-    "eventType": "ErrorReoccurred",
+    "eventType": "NewErrorOccurred",
     "error": {
         "url": "https://app.raygun.com/dashboard/some-error-url",
-        "message": "An error occurred",
+        "message": "A new error occurred",
         "firstOccurredOn": "2018-04-20T01:55:28Z",
         "lastOccurredOn": "2018-04-20T15:25:44Z",
         "usersAffected": 0,
-        "totalOccurrences": 24
+        "totalOccurrences": 1
     },
     "application": {
         "name": "Some Raygun Project",

@@ -1,6 +1,6 @@
 {
     "event": "error_notification",
-    "eventType": "ErrorReoccurred",
+    "eventType": "OneMinuteFollowUp",
     "error": {
         "url": "https://app.raygun.com/dashboard/some-error-url",
         "message": "An error occurred",
