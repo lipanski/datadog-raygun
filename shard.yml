@@ -15,9 +15,9 @@ license: MIT
 dependencies:
   kemal:
     github: kemalcr/kemal
-  dotenv:
-    github: gdotdesign/cr-dotenv
 
 development_dependencies:
+  dotenv:
+    github: gdotdesign/cr-dotenv
   sentry:
     github: samueleaton/sentry

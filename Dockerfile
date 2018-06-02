@@ -4,7 +4,7 @@ FROM crystallang/crystal:0.24.2
 COPY shard.yml /src/
 COPY shard.lock /src/
 WORKDIR /src
-RUN crystal deps
+RUN crystal deps --production
 
 COPY src /src/
 RUN crystal build --release datadog_raygun.cr
