@@ -31,7 +31,7 @@ docker run -it \
   -e QUEUE_SIZE=50 \
   -e LOG_LEVEL=DEBUG \
   -p 3000:80 \
-  datadog-raygun --port 80
+  datadog-raygun
 ```
 
 Your container will be reachable over port 3000.
