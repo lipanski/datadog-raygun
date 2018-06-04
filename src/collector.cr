@@ -1,11 +1,12 @@
 require "logger"
 require "./datadog"
+require "./raygun"
 
 module Collector
   QUEUE_SIZE     = ENV.fetch("QUEUE_SIZE", "50").to_i
   QUEUE_DEADLINE = ENV.fetch("QUEUE_DEADLINE", "60").to_i.seconds
 
-  @@queue : Array(Datadog::Metric) = Array(Datadog::Metric).new
+  @@queue : Array(Raygun::Event) = Array(Raygun::Event).new
   @@last_check = Time.now
   @@logger : Logger = Logger.new(STDOUT).tap do |logger|
     logger.level = Logger::Severity.parse(ENV.fetch("LOG_LEVEL", "ERROR"))
@@ -29,7 +30,7 @@ module Collector
     logger.info("Started collecting metrics", "COLLECTOR")
   end
 
-  def self.enqueue(metric : Datadog::Metric)
+  def self.enqueue(metric : Raygun::Event)
     @@queue << metric
   end
 
@@ -39,21 +40,28 @@ module Collector
 
     logger.debug("Delivering metrics", "COLLECTOR")
 
-    @@last_check = Time.now
+    error_events = @@queue.shift(@@queue.size)
+    new_error_events = error_events.select(&.new?)
 
-    metrics = @@queue.shift(QUEUE_SIZE)
-    series = Datadog::Series.new(metrics)
-    series.create!
+    total_occurences = error_events.reduce(0) { |memo, event| memo + event.error.total_occurences }
+
+    metrics = Array(Datadog::Metric).new
+    metrics << Datadog::Metric.count("raygun.error_occurred", total_occurences)
+    # series = Datadog::Series.new(metrics)
+    # series.create!
+
+
   rescue exception : Datadog::Error
     logger.error("A Datadog error occured: #{exception.message}", "COLLECTOR")
   rescue exception : Exception
     logger.error("An error occured: #{exception.inspect_with_backtrace}", "COLLECTOR")
   else
-    logger.debug("#{metrics.size} metrics delivered", "COLLECTOR")
+    @@last_check = Time.now
+    # logger.debug("#{metrics.size} metrics delivered", "COLLECTOR")
   end
 
   private def self.process?
-    queue_full? || long_time_since_last_processed?
+    long_time_since_last_processed?
   end
 
   private def self.queue_empty?

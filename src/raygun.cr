@@ -26,7 +26,15 @@ module Raygun
     )
 
     def error? : Bool
-      [EventType::NewErrorOccurred, EventType::ErrorReoccurred].includes?(event_type)
+      [
+        EventType::NewErrorOccurred,
+        EventType::ErrorReoccurred,
+        EventType::OneMinuteFollowUp,
+        EventType::FiveMinuteFollowUp,
+        EventType::TenMinuteFollowUp,
+        EventType::ThirtyMinuteFollowUp,
+        EventType::HourlyFollowUp,
+      ].includes?(event_type)
     end
 
     def new? : Bool
@@ -54,6 +62,10 @@ module Raygun
       last_occurred_at: {type: Time?, key: "lastOccurredOn"},
       total_occurences: {type: Int64?, key: "totalOccurrences"},
     )
+
+    def total_occurences : Int64
+      @total_occurences || 1
+    end
   end
 
   class Application

@@ -36,16 +36,17 @@ module Datadog
   class Metric
     JSON.mapping(
       metric: String,
-      points: Array(Array(Int32)),
       type: String,
+      interval: Int32?,
+      points: Array(Array(Int32)),
       tags: Array(String),
     )
 
-    def self.count(metric : String, value : Int32, tags : Array(String))
-      new(metric, "count", [[Time.now.to_s("%s").to_i, value]], tags)
+    def self.count(metric : String, value : Int32, interval : Int32, tags : Array(String))
+      new(metric, "count", interval, [[Time.now.to_s("%s").to_i, value]], tags)
     end
 
-    def initialize(@metric : String, @type : String, @points : Array(Array(Int32)), @tags : Array(String))
+    def initialize(@metric : String, @type : String, @interval : Int32?, @points : Array(Array(Int32)), @tags : Array(String))
     end
   end
 end
