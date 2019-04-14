@@ -39,7 +39,7 @@ Your container will be reachable over port 3000.
 ## Development
 
 ```sh
-crystal deps
+shards install
 ```
 
 ```sh
