@@ -21,24 +21,23 @@ module Raygun
       event: String,
       event_type: {type: EventType, key: "eventType"},
       error: Error,
-      tags: Array(String)?,
       application: Application,
     )
 
-    def error? : Bool
-      [
-        EventType::NewErrorOccurred,
-        EventType::ErrorReoccurred,
-        EventType::OneMinuteFollowUp,
-        EventType::FiveMinuteFollowUp,
-        EventType::TenMinuteFollowUp,
-        EventType::ThirtyMinuteFollowUp,
-        EventType::HourlyFollowUp,
-      ].includes?(event_type)
+    def error_notification? : Bool
+      event == "error_notification"
     end
 
     def new? : Bool
       event_type == EventType::NewErrorOccurred
+    end
+
+    def id
+      error.url
+    end
+
+    def application_id
+      application.name # url is better!
     end
 
     def application_name : String
@@ -49,8 +48,12 @@ module Raygun
       error.message
     end
 
-    def prefixed_tags(prefix : String) : Array(String)
-      (tags || Array(String).new).map { |tag| prefix + ":" + tag }
+    def total_occurences : Int64
+      error.total_occurences.not_nil!
+    end
+
+    def last_occured_at : Time
+      error.last_occured_at.not_nil!
     end
   end
 
@@ -62,15 +65,12 @@ module Raygun
       last_occurred_at: {type: Time?, key: "lastOccurredOn"},
       total_occurences: {type: Int64?, key: "totalOccurrences"},
     )
-
-    def total_occurences : Int64
-      @total_occurences || 1
-    end
   end
 
   class Application
     JSON.mapping(
       name: String,
+      url: String,
     )
   end
 end

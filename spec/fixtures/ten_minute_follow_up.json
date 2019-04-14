@@ -1,0 +1,16 @@
+{
+    "event": "error_notification",
+    "eventType": "TenMinuteFollowUp",
+    "error": {
+        "url": "https://app.raygun.com/dashboard/aaaaaaa/errors/1",
+        "message": "An error occurred",
+        "firstOccurredOn": "2019-04-14T13:25:02Z",
+        "lastOccurredOn": "2019-04-14T13:35:47Z",
+        "usersAffected": 0,
+        "totalOccurrences": 22
+    },
+    "application": {
+        "name": "Florin",
+        "url": "https://app.raygun.com/dashboard/aaaaaaa"
+    }
+}

@@ -27,7 +27,7 @@ module Datadog
         case response.status_code
         when 403 then raise Unauthorized.new("Authorization failed, check the DATADOG_API_KEY")
         when 413 then raise RequestPayloadTooLarge.new("The payload was too large")
-        else          raise Error.new("Request to Datadog failed with status #{response.status_code}\n#{response.body}\n")
+        else          raise Error.new("Request to Datadog failed with status #{response.status_code} and body:\n#{response.body}\n")
         end
       end
     end
@@ -44,6 +44,10 @@ module Datadog
 
     def self.count(metric : String, value : Int32, interval : Int32, tags : Array(String))
       new(metric, "count", interval, [[Time.now.to_s("%s").to_i, value]], tags)
+    end
+
+    def self.gauge(metric : String, value : Int32, tags : Array(String))
+      new(metric, "gauge", nil, [[Time.now.to_s("%s").to_i, value]], tags)
     end
 
     def initialize(@metric : String, @type : String, @interval : Int32?, @points : Array(Array(Int32)), @tags : Array(String))

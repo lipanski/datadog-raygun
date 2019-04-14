@@ -10,29 +10,26 @@ TAGS = Hash(String, Array(String)).from_json(ENV.fetch("TAGS"))
 
 post "/webhook/:secret" do |env|
   unless env.params.url["secret"] == ENV.fetch("WEBHOOK_SECRET")
-    halt env, status_code: 401, response: "unauthorized"
+    halt env, status_code: 401, response: "Unauthorized."
   end
 
   body = env.request.body.not_nil!.gets_to_end
   event = Raygun::Event.from_json(body)
 
-  if event.error? && TAGS.has_key?(event.application_name)
-    metric_name = event.new? ? "raygun.new_error_occurred" : "raygun.error_reoccurred"
-    tags = TAGS[event.application_name] + event.prefixed_tags("raygun")
-    # Collector.enqueue(Datadog::Metric.count(metric_name, 1, tags))
+  if event.error_notification? && TAGS.has_key?(event.application_id)
     Collector.enqueue(event)
   end
 
-  "ok"
+  "Ok."
 end
 
 error 404 do
-  "not found"
+  "Not found."
 end
 
 error 500 do
-  "error"
+  "An unknown error occured."
 end
 
-Collector.run
+Collector.run(TAGS)
 Kemal.run

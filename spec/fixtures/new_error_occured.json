@@ -1,0 +1,36 @@
+{
+    "event": "error_notification",
+    "eventType": "NewErrorOccurred",
+    "error": {
+        "url": "https://app.raygun.com/dashboard/aaaaaaa/errors/1",
+        "message": "An error occurred",
+        "firstOccurredOn": "2019-04-14T13:25:02Z",
+        "lastOccurredOn": "2019-04-14T13:25:02Z",
+        "usersAffected": 0,
+        "totalOccurrences": 1,
+        "instance": {
+            "tags": [
+                "anothertag1",
+                "another tag 2",
+                "another-tag-3"
+            ],
+            "affectedUser": {
+                "identifier": "123456789",
+                "isAnonymous": false,
+                "email": "test@example.com",
+                "fullName": "Test User",
+                "firstName": "Test",
+                "uuid": "783491e1-d4a9-46bc-9fde-9b1dd9ef6c6e"
+            },
+            "version": "1.0.0.1",
+            "customData": {
+                "domain": "WORKPLACE",
+                "area": "51"
+            }
+        }
+    },
+    "application": {
+        "name": "Florin",
+        "url": "https://app.raygun.com/dashboard/aaaaaaa"
+    }
+}
