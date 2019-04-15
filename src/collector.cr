@@ -66,8 +66,8 @@ module Collector
     init(applications)
     spawn do
       loop do
-        process
         sleep QUEUE_DEADLINE
+        process
       end
     end
 
@@ -103,5 +103,5 @@ end
 at_exit do
   Collector.logger.info("Processing the enqueued metrics before shutting down...", "COLLECTOR")
   Collector.process
-  Collector.logger.info("LA REVEDERE!", "COLLECTOR")
+  Collector.logger.info("La revedere!", "COLLECTOR")
 end
