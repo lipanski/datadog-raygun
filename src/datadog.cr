@@ -17,6 +17,8 @@ module Datadog
     end
 
     def create!
+      return if series.empty?
+
       response = HTTP::Client.post(
         "https://api.datadoghq.com/api/v1/series?api_key=" + ENV.fetch("DATADOG_API_KEY"),
         headers: HTTP::Headers{"Content-Type" => "application/json"},

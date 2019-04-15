@@ -3,33 +3,43 @@ require "./datadog"
 require "./raygun"
 
 module Collector
-  QUEUE_SIZE     = ENV.fetch("QUEUE_SIZE", "50").to_i
-  QUEUE_DEADLINE = ENV.fetch("QUEUE_DEADLINE", "60").to_i.seconds
+  QUEUE_DEADLINE = ENV.fetch("QUEUE_DEADLINE", "60").to_i
 
   class Application
     getter tags : Array(String)
 
     def initialize(@tags : Array(String))
-      @grouped_error_count = Hash(String, Int64).new
+      @error_count = 0
       @new_error_count = 0
+      @active = false
     end
 
-    def push_error_count(error_id : String, value : Int64)
-      @grouped_error_count[error_id] = (@grouped_error_count[error_id]? || 0i64) + value
+    def push_error_count(value : Int64)
+      @active = true
+      @error_count += value
     end
 
     def pop_error_count
-      @grouped_error_count.clear.reduce(0) { |acc, (_, value)| acc += value }
+      @active = false
+      @error_count.clone.tap do
+        @error_count = 0
+      end
     end
 
     def increment_new_error_count
+      @active = true
       @new_error_count += 1
     end
 
     def pop_new_error_count
-      @new_error_count.tap do |count|
-        count = 0
+      @active = false
+      @new_error_count.clone.tap do
+        @new_error_count = 0
       end
+    end
+
+    def active? : Bool
+      @active
     end
   end
 
@@ -56,8 +66,8 @@ module Collector
     init(applications)
     spawn do
       loop do
-        try_process
-        sleep 1
+        process
+        sleep QUEUE_DEADLINE
       end
     end
 
@@ -65,54 +75,28 @@ module Collector
   end
 
   def self.enqueue(event : Raygun::Event)
-    @@queue[event.application_id].push_error_count(event.id, event.total_occurences)
+    @@queue[event.application_id].push_error_count(event.total_occurences)
     @@queue[event.application_id].increment_new_error_count if event.new?
   end
 
-  def self.try_process
-    return unless process?
-
-    process
-  end
-
   def self.process
-    return if queue_empty?
-
     logger.debug("Delivering metrics", "COLLECTOR")
 
     metrics = Array(Datadog::Metric).new
     @@queue.each do |_, application|
-      metrics << Datadog::Metric.gauge("raygun.error_occurred", application.pop_error_count, application.tags)
-      metrics << Datadog::Metric.gauge("raygun.new_errors", application.pop_new_error_count, application.tags)
+      next unless application.active?
+      metrics << Datadog::Metric.gauge("raygun.error_count", application.pop_error_count, application.tags)
+      metrics << Datadog::Metric.gauge("raygun.new_error_count", application.pop_new_error_count, application.tags)
     end
 
-    # series = Datadog::Series.new(metrics)
-    # series.create!
-
-
+    series = Datadog::Series.new(metrics)
+    series.create!
   rescue exception : Datadog::Error
     logger.error(exception.message, "COLLECTOR")
   rescue exception : Exception
     logger.error(exception.inspect_with_backtrace, "COLLECTOR")
   else
-    @@last_check = Time.now
-    # logger.debug("#{metrics.size} metrics delivered", "COLLECTOR")
-  end
-
-  private def self.process?
-    long_time_since_last_processed?
-  end
-
-  private def self.queue_empty?
-    @@queue.empty?
-  end
-
-  private def self.queue_full?
-    @@queue.size > QUEUE_SIZE
-  end
-
-  private def self.long_time_since_last_processed?
-    Time.now - @@last_check > QUEUE_DEADLINE
+    logger.debug("#{metrics.size} metrics delivered", "COLLECTOR")
   end
 end
 
