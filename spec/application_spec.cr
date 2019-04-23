@@ -10,23 +10,6 @@ describe Application do
     end
   end
 
-  describe "#active?" do
-    describe "when no events have ever been pushed" do
-      it "returns false" do
-        app = Application.new
-        app.active?.should eq(false)
-      end
-    end
-
-    describe "when events have been pushed and are currently in the queue" do
-      it "returns true" do
-        app = Application.new
-        app << Helpers.raygun_event
-        app.active?.should eq(true)
-      end
-    end
-  end
-
   describe "#pop_new_error_count" do
     describe "when no events have been pushed" do
       it "returns 0" do

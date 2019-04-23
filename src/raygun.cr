@@ -32,6 +32,14 @@ module Raygun
       event_type == EventType::NewErrorOccurred
     end
 
+    def reoccurred? : Bool
+      event_type == EventType::ErrorReoccurred
+    end
+
+    def single? : Bool
+      new? || reoccurred?
+    end
+
     def followup? : Bool
       [
         EventType::OneMinuteFollowUp,
@@ -54,7 +62,7 @@ module Raygun
       application.name
     end
 
-    def total_occurences : Int64
+    def total_occurences : Int32
       error.total_occurences.not_nil!
     end
 
@@ -67,7 +75,7 @@ module Raygun
     JSON.mapping(
       url: String,
       last_occurred_at: {type: Time?, key: "lastOccurredOn"},
-      total_occurences: {type: Int64?, key: "totalOccurrences"},
+      total_occurences: {type: Int32?, key: "totalOccurrences"},
     )
   end
 
