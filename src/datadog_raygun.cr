@@ -6,7 +6,8 @@ require "./raygun"
 require "./datadog"
 require "./collector"
 
-TAGS = Hash(String, Array(String)).from_json(ENV.fetch("TAGS"))
+TAGS      = Hash(String, Array(String)).from_json(ENV.fetch("TAGS"))
+COLLECTOR = Collector.new(TAGS)
 
 post "/webhook/:secret" do |env|
   unless env.params.url["secret"] == ENV.fetch("WEBHOOK_SECRET")
@@ -17,7 +18,7 @@ post "/webhook/:secret" do |env|
   event = Raygun::Event.from_json(body)
 
   if event.error_notification? && TAGS.has_key?(event.application_id)
-    Collector.enqueue(event)
+    COLLECTOR.enqueue(event)
   end
 
   "Ok."
@@ -31,5 +32,4 @@ error 500 do
   "An unknown error occured."
 end
 
-Collector.run(TAGS)
 Kemal.run

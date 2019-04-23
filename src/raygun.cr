@@ -16,7 +16,7 @@ module Raygun
     CommentAdded
   end
 
-  class Event
+  struct Event
     JSON.mapping(
       event: String,
       event_type: {type: EventType, key: "eventType"},
@@ -44,10 +44,6 @@ module Raygun
       application.name
     end
 
-    def error_message : String
-      error.message
-    end
-
     def total_occurences : Int64
       error.total_occurences.not_nil!
     end
@@ -57,17 +53,15 @@ module Raygun
     end
   end
 
-  class Error
+  struct Error
     JSON.mapping(
       url: String,
-      message: String,
-      first_occurred_at: {type: Time?, key: "firstOccurredOn"},
       last_occurred_at: {type: Time?, key: "lastOccurredOn"},
       total_occurences: {type: Int64?, key: "totalOccurrences"},
     )
   end
 
-  class Application
+  struct Application
     JSON.mapping(
       name: String,
       url: String,
