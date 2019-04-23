@@ -37,9 +37,7 @@ class Collector
   end
 
   def enqueue(event : Raygun::Event)
-    @queue[event.application_id].push_event(event)
-    # @queue[event.application_id].push_error_count(event.total_occurences)
-    # @queue[event.application_id].increment_new_error_count if event.new?
+    @queue[event.application_id] << event
   end
 
   def run
@@ -58,7 +56,6 @@ class Collector
 
     metrics = Array(Datadog::Metric).new
     @queue.each do |_, application|
-      next unless application.active?
       metrics << Datadog::Metric.gauge("raygun.error_count", application.pop_error_count, application.tags)
       metrics << Datadog::Metric.gauge("raygun.new_error_count", application.pop_new_error_count, application.tags)
     end

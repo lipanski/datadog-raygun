@@ -32,6 +32,16 @@ module Raygun
       event_type == EventType::NewErrorOccurred
     end
 
+    def followup? : Bool
+      [
+        EventType::OneMinuteFollowUp,
+        EventType::FiveMinuteFollowUp,
+        EventType::TenMinuteFollowUp,
+        EventType::ThirtyMinuteFollowUp,
+        EventType::HourlyFollowUp,
+      ].includes?(event_type)
+    end
+
     def id
       error.url
     end

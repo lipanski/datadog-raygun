@@ -1,36 +1,66 @@
 require "./raygun"
 
 class Application
+  class Pair
+    property first : Raygun::Event
+    property last : Raygun::Event? = nil
+    @counted : Bool = false
+
+    def initialize(@first : Raygun::Event)
+    end
+
+    def count : Int64?
+      return if last.nil? && first.followup?
+      return if @counted
+      return 1i64 if last.nil?
+
+      last.not_nil!.total_occurences - first.total_occurences + 1
+    end
+
+    def first=(value : Raygun::Event)
+      @counted = false
+      @first = value
+    end
+
+    def swap
+      @counted = true
+
+      if last
+        self.first = last.not_nil!
+        self.last = nil
+      end
+    end
+  end
+
   getter tags : Array(String)
 
   def initialize(@tags : Array(String) = Array(String).new)
-    @error_count = 0
+    @grouped_events = Hash(String, Pair).new
     @new_error_count = 0
-    @grouped_events = Hash(String, Array(Raygun::Event)).new
   end
 
-  def push_event(event : Raygun::Event)
+  def <<(event : Raygun::Event)
     if event.new?
       @new_error_count += 1
     end
 
-    @grouped_events[event.id] ||= Array(Raygun::Event).new
-    @grouped_events[event.id] << event
+    if @grouped_events[event.id]?
+      @grouped_events[event.id].last = event
+    else
+      @grouped_events[event.id] = Pair.new(event)
+    end
   end
 
-  def pop_error_count
-    count = 0
+  def pop_error_count : Int64
+    count = 0i64
 
-    @grouped_events.each do |id, events|
-      events.each do |event|
-        if event.new?
-          count += event.total_occurences
-        else
-        end
+    @grouped_events.each do |_, pair|
+      if pair_count = pair.count
+        count += pair_count
       end
-    end
 
-    @grouped_events.clear
+      pair.swap
+    end
 
     count
   end
