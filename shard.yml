@@ -1,5 +1,5 @@
 name: datadog_raygun
-version: 0.1.1
+version: 0.2.0
 
 authors:
   - Florin Lipan <florinlipan@gmail.com>
@@ -8,7 +8,7 @@ targets:
   datadog_raygun:
     main: src/datadog_raygun.cr
 
-crystal: 0.27.2
+crystal: 0.28.0
 
 license: MIT
 

@@ -28,7 +28,7 @@ docker run -it \
   -e TAGS='{"Some Raygun Project": ["some-datadog-label", "some-other-datadog-label"]}' \
   -e QUEUE_DEADLINE=60 \
   -e LOG_LEVEL=DEBUG \
-  -p 3000:80 \
+  -p 3000:3000 \
   datadog-raygun
 ```
 

@@ -2,15 +2,15 @@
     "event": "error_notification",
     "eventType": "OneMinuteFollowUp",
     "error": {
-        "url": "https://app.raygun.com/dashboard/some-error-url",
+        "url": "https://app.raygun.com/dashboard/aaaaaaa/errors/1",
         "message": "An error occurred",
-        "firstOccurredOn": "2018-04-20T01:55:28Z",
-        "lastOccurredOn": "2018-04-20T15:25:44Z",
+        "firstOccurredOn": "2018-06-01T13:18:20Z",
+        "lastOccurredOn": "2019-04-14T13:25:44Z",
         "usersAffected": 0,
-        "totalOccurrences": 24
+        "totalOccurrences": 19
     },
     "application": {
-        "name": "Some Raygun Project",
-        "url": "https://app.raygun.com/dashboard/some-application-url"
+        "name": "Florin",
+        "url": "https://app.raygun.com/dashboard/aaaaaaa"
     }
 }
