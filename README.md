@@ -1,4 +1,4 @@
-# datadog_raygun
+# datadog-raygun
 
 An app to help you pipe Raygun metrics into DataDog:
 
