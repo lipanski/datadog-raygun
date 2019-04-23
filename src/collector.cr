@@ -1,55 +1,7 @@
 require "logger"
 require "./datadog"
 require "./raygun"
-
-class Application
-  getter tags : Array(String)
-
-  def initialize(@tags : Array(String))
-    @error_count = 0
-    @new_error_count = 0
-    @active = false
-    @events = Hash(String, Array(Raygun::Event)).new
-  end
-
-  def push_event(event : Raygun::Event)
-    @active = true
-
-    if event.new?
-      increment_new_error_count
-    end
-
-    @events[event.id] ||= Array(Raygun::Event).new
-    @events[event.id] << event
-  end
-
-  # def push_error_count(value : Int64)
-  #   @active = true
-  #   @error_count += value
-  # end
-
-  def pop_error_count
-    @active = false
-    @error_count.clone.tap do
-      @error_count = 0
-    end
-  end
-
-  def increment_new_error_count
-    @new_error_count += 1
-  end
-
-  def pop_new_error_count
-    @active = false
-    @new_error_count.clone.tap do
-      @new_error_count = 0
-    end
-  end
-
-  def active? : Bool
-    @events.any?
-  end
-end
+require "./application"
 
 class Collector
   QUEUE_DEADLINE = ENV.fetch("QUEUE_DEADLINE", "60").to_i
@@ -84,6 +36,12 @@ class Collector
     end
   end
 
+  def enqueue(event : Raygun::Event)
+    @queue[event.application_id].push_event(event)
+    # @queue[event.application_id].push_error_count(event.total_occurences)
+    # @queue[event.application_id].increment_new_error_count if event.new?
+  end
+
   def run
     spawn do
       loop do
@@ -93,12 +51,6 @@ class Collector
     end
 
     logger.info("Started collecting metrics", "COLLECTOR")
-  end
-
-  def enqueue(event : Raygun::Event)
-    @queue[event.application_id].push_event(event)
-    # @queue[event.application_id].push_error_count(event.total_occurences)
-    # @queue[event.application_id].increment_new_error_count if event.new?
   end
 
   def process
