@@ -4,9 +4,24 @@ require "./helpers"
 
 describe Application do
   describe "#tags" do
-    it "returns the tags" do
-      app = Application.new(["hello", "world"])
-      app.tags.should eq(["hello", "world"])
+    it "splits the application name into tags" do
+      app = Application.new("hello world")
+      app.tags.should eq(["raygun:hello", "raygun:world"])
+    end
+
+    it "ignores special characters" do
+      app = Application.new("hello/world [production],bla")
+      app.tags.should eq(["raygun:hello", "raygun:world", "raygun:production", "raygun:bla"])
+    end
+
+    it "enforces lower case" do
+      app = Application.new("Hello wORld")
+      app.tags.should eq(["raygun:hello", "raygun:world"])
+    end
+
+    it "returns an empty array if no name was provided" do
+      app = Application.new
+      app.tags.should eq(Array(String).new)
     end
   end
 

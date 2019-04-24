@@ -5,7 +5,7 @@ An app to help you pipe Raygun metrics into DataDog:
 - `raygun.error_count`: The total error count for a particular period of time and Raygun application.
 - `raygun.new_error_count`: The new error count for a particular period of time and Raygun application.
 
-> Note that because of [the way](https://raygun.com/documentation/product-guides/crash-reporting/integrations/webhooks/) this information is provided by Raygun, results might not always be reliable or up-to-date. While working on this project, I've experienced both delays and missing callbacks when dealing with the Raygun webhooks.
+> Because of [the way](https://raygun.com/documentation/product-guides/crash-reporting/integrations/webhooks/) this information is provided by Raygun, results might not always be reliable or up-to-date. While working on this project, I experienced both delays and missing callbacks when dealing with the Raygun webhooks. Suggestions for improvement and pull requests are welcome.
 
 ## Installation
 
@@ -26,7 +26,6 @@ The application is configured via environment variables:
 
 - `WEBHOOK_SECRET`: The *secret* used inside the `POST /webhook/[SECRET]` endpoint for authentication.
 - `DATADOG_API_KEY`: A DataDog API key, used to push the metrics to DataDog.
-- `TAGS`: A JSON String where every key is a Raygun application name and every value is an Array of DataDog labels, that will be added to the metrics of every application.
 - `QUEUE_DEADLINE`: A value in seconds, which determines how often the metrics will be delivered to DataDog (defaults to 60 seconds).
 - `LOG_LEVEL`: The log level (defaults to INFO).
 
@@ -36,7 +35,6 @@ Here's an example of how to run the app:
 # The webhook endpoint will be available at http://localhost:3000/webhook/my-secret
 WEBHOOK_SECRET=my-secret \
   DATADOG_API_KEY=your-datadog-api-key \
-  TAGS='{"Some Raygun Project": ["some-datadog-label", "some-other-datadog-label"], "Some Other Raygun Project": []}' \
   QUEUE_DEADLINE=60 \
   LOG_LEVEL=DEBUG \
   datadog_raygun
@@ -44,7 +42,11 @@ WEBHOOK_SECRET=my-secret \
 
 > By default the server will run on port 3000, but you can override this via the `--port` argument.
 
-Once you've installed the app and ensured it's running, go over to Raygun and enable the Webhook integration for every Raygun application you are interested in collecting metrics from.
+Once you've installed the app and ensured it's running, go over to Raygun and **enable the Webhook integration for every Raygun application** you are interested in collecting metrics from.
+
+**DataDog tags** are produced automatically by splitting the Raygun application name into words and prepending them with `raygun:`. A Raygun application called `Hello/World [Production]` will be tagged with `raygun:hello`, `raygun:world`, `raygun:production` in DataDog.
+
+That's it, enjoy your new & shiny metrics!
 
 ## Development
 
@@ -110,7 +112,6 @@ Run a container:
 docker run -it \
   -e WEBHOOK_SECRET=secret \
   -e DATADOG_API_KEY=your-datadog-api-key \
-  -e TAGS='{"Some Raygun Project": ["some-datadog-label", "some-other-datadog-label"]}' \
   -e QUEUE_DEADLINE=60 \
   -e LOG_LEVEL=DEBUG \
   -p 3000:3000 \

@@ -55,7 +55,7 @@ module Raygun
     end
 
     def application_id
-      application.name # url is better!
+      application.url
     end
 
     def application_name : String

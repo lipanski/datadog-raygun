@@ -18,11 +18,7 @@ class Collector
     @logger
   end
 
-  def initialize(applications : Hash(String, Array(String)), run_on_init : Bool = true, process_on_exit : Bool = true)
-    applications.each do |application_id, tags|
-      @queue[application_id] = Application.new(tags)
-    end
-
+  def initialize(run_on_init : Bool = true, process_on_exit : Bool = true)
     if run_on_init
       run
     end
@@ -37,6 +33,11 @@ class Collector
   end
 
   def enqueue(event : Raygun::Event)
+    unless @queue[event.application_id]?
+      logger.info("Registered a new application: #{event.application_name}")
+      @queue[event.application_id] = Application.new(event.application_name)
+    end
+
     @queue[event.application_id] << event
   end
 

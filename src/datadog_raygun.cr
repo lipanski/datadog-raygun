@@ -6,8 +6,7 @@ require "./raygun"
 require "./datadog"
 require "./collector"
 
-TAGS      = Hash(String, Array(String)).from_json(ENV.fetch("TAGS"))
-COLLECTOR = Collector.new(TAGS)
+COLLECTOR = Collector.new
 
 post "/webhook/:secret" do |env|
   unless env.params.url["secret"] == ENV.fetch("WEBHOOK_SECRET")
@@ -17,7 +16,7 @@ post "/webhook/:secret" do |env|
   body = env.request.body.not_nil!.gets_to_end
   event = Raygun::Event.from_json(body)
 
-  if event.error_notification? && TAGS.has_key?(event.application_id)
+  if event.error_notification?
     COLLECTOR.enqueue(event)
   end
 
