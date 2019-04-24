@@ -5,7 +5,7 @@ An app to help you pipe Raygun metrics into DataDog:
 - `raygun.error_count`: The total error count for a particular period of time and Raygun application.
 - `raygun.new_error_count`: The new error count for a particular period of time and Raygun application.
 
-> Because of [the way](https://raygun.com/documentation/product-guides/crash-reporting/integrations/webhooks/) this information is provided by Raygun, results might not always be reliable or up-to-date. While working on this project, I experienced both delays and missing callbacks when dealing with the Raygun webhooks. Suggestions for improvement and pull requests are welcome.
+> Because of [the way](https://raygun.com/documentation/product-guides/crash-reporting/integrations/webhooks/) this information is made available, results might not always be reliable or up-to-date. While working on this project, I experienced both delays and missing callbacks when dealing with the Raygun webhooks. Suggestions for improvement and pull requests are welcome.
 
 ## Installation
 
