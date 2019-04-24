@@ -44,7 +44,7 @@ WEBHOOK_SECRET=my-secret \
 
 Once you've installed the app and ensured it's running, go over to Raygun and **enable the Webhook integration for every Raygun application** you are interested in collecting metrics from.
 
-**DataDog tags** are produced automatically by splitting the Raygun application name into words and prepending them with `raygun:`. A Raygun application called `Hello/World [Production]` will be tagged with `raygun:hello`, `raygun:world`, `raygun:production` in DataDog.
+**DataDog tags** are produced automatically by splitting the Raygun application name into words. A Raygun application called `Hello/World [Production]` will be tagged in DataDog with `hello`, `world`, `production` and `hello_world_production`.
 
 That's it, enjoy your new & shiny metrics!
 

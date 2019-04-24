@@ -61,13 +61,8 @@ class Collector
       new_error_count = application.pop_new_error_count
       tags = application.tags
 
-      if error_count > 0
-        metrics << Datadog::Metric.gauge("raygun.error_count", error_count, tags)
-      end
-
-      if new_error_count > 0
-        metrics << Datadog::Metric.gauge("raygun.new_error_count", new_error_count, tags)
-      end
+      metrics << Datadog::Metric.gauge("raygun.error_count", error_count, tags)
+      metrics << Datadog::Metric.gauge("raygun.new_error_count", new_error_count, tags)
     end
 
     series = Datadog::Series.new(metrics)

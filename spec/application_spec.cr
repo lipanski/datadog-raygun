@@ -6,17 +6,17 @@ describe Application do
   describe "#tags" do
     it "splits the application name into tags" do
       app = Application.new("hello world")
-      app.tags.should eq(["raygun:hello", "raygun:world"])
+      app.tags.should eq(["hello", "world", "hello_world"])
     end
 
     it "ignores special characters" do
       app = Application.new("hello/world [production],bla")
-      app.tags.should eq(["raygun:hello", "raygun:world", "raygun:production", "raygun:bla"])
+      app.tags.should eq(["hello", "world", "production", "bla", "hello_world_production_bla"])
     end
 
     it "enforces lower case" do
       app = Application.new("Hello wORld")
-      app.tags.should eq(["raygun:hello", "raygun:world"])
+      app.tags.should eq(["hello", "world", "hello_world"])
     end
 
     it "returns an empty array if no name was provided" do

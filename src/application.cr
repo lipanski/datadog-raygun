@@ -4,7 +4,8 @@ class Application
   getter tags : Array(String)
 
   def initialize(name : String = "")
-    @tags = name.split(/\W+/).reject { |part| part.empty? }.map { |part| "raygun:" + part.downcase }
+    @tags = name.split(/\W+/).reject(&.empty?).map(&.downcase)
+    @tags << @tags.join("_") unless @tags.empty?
     @grouped_events = Hash(String, {counter: Int32, previous: Raygun::Event}).new
     @new_error_count = 0
   end
