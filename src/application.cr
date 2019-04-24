@@ -1,13 +1,12 @@
 require "./raygun"
 
 class Application
-  def initialize(@name : String = "")
+  getter tags : Array(String)
+
+  def initialize(name : String = "")
+    @tags = name.split(/\W+/).reject { |part| part.empty? }.map { |part| "raygun:" + part.downcase }
     @grouped_events = Hash(String, {counter: Int32, previous: Raygun::Event}).new
     @new_error_count = 0
-  end
-
-  def tags : Array(String)
-    @name.split(/\W+/).reject { |part| part.empty? }.map { |part| "raygun:" + part.downcase }
   end
 
   def <<(event : Raygun::Event)
